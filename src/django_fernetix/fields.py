@@ -55,7 +55,7 @@ class FernetField(models.Field):
                         hint="Encrypted values are random, so they can be neither "
                         "compared nor indexed.",
                         obj=self,
-                        id="django_fernet.E001",
+                        id="django_fernetix.E001",
                     )
                 )
         if self.blind_index:
@@ -71,7 +71,7 @@ class FernetField(models.Field):
             checks.Error(
                 f"blind_index=True needs the {INDEX_SETTING} setting.",
                 obj=self,
-                id="django_fernet.E002",
+                id="django_fernetix.E002",
             )
         ]
 
@@ -138,7 +138,7 @@ class FernetField(models.Field):
         except InvalidToken:
             raise DecryptionError(
                 f"Cannot decrypt {self.model._meta.label}.{self.name}: no key in "
-                "DJANGO_FERNET_KEYS matches, or the stored value is not an "
+                "DJANGO_FERNETIX_KEYS matches, or the stored value is not an "
                 "encrypted token."
             ) from None
         return self.codec.loads(text)
@@ -248,7 +248,7 @@ class FernetJSONField(FernetField):
             checks.Error(
                 "FernetJSONField does not support blind_index.",
                 obj=self,
-                id="django_fernet.E003",
+                id="django_fernetix.E003",
             )
         ]
 

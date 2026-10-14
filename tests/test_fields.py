@@ -9,7 +9,7 @@ from django.db import connection, models
 from django.test import override_settings
 from django.test.utils import isolate_apps
 
-from django_fernet import DecryptionError, FernetTextField, generate_key
+from django_fernetix import DecryptionError, FernetTextField, generate_key
 from tests.testapp.models import Secret
 
 pytestmark = pytest.mark.django_db
@@ -137,12 +137,12 @@ def test_unsupported_options_fail_the_system_check(option):
             app_label = "testapp"
 
     errors = Broken._meta.get_field("value").check()
-    assert "django_fernet.E001" in [error.id for error in errors]
+    assert "django_fernetix.E001" in [error.id for error in errors]
 
 
 def test_wrong_key_raises_decryption_error():
     secret = Secret.objects.create(text="x")
-    with override_settings(DJANGO_FERNET_KEYS=[generate_key()]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[generate_key()]):
         with pytest.raises(DecryptionError, match="testapp.Secret.text"):
             Secret.objects.get(pk=secret.pk)
 
@@ -157,24 +157,24 @@ def test_unencrypted_value_raises_decryption_error():
 
 def test_key_rotation():
     old, new = generate_key(), generate_key()
-    with override_settings(DJANGO_FERNET_KEYS=[old]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[old]):
         pk = Secret.objects.create(text="x").pk
-    with override_settings(DJANGO_FERNET_KEYS=[new, old]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[new, old]):
         secret = Secret.objects.get(pk=pk)
         assert secret.text == "x"
         secret.save()
-    with override_settings(DJANGO_FERNET_KEYS=[new]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[new]):
         assert Secret.objects.get(pk=pk).text == "x"
 
 
 def test_single_key_string_is_accepted():
-    with override_settings(DJANGO_FERNET_KEYS=generate_key()):
+    with override_settings(DJANGO_FERNETIX_KEYS=generate_key()):
         assert roundtrip(text="x").text == "x"
 
 
 @pytest.mark.parametrize("keys", [None, [], ["too short"]])
 def test_bad_key_configuration(keys):
-    with override_settings(DJANGO_FERNET_KEYS=keys):
+    with override_settings(DJANGO_FERNETIX_KEYS=keys):
         with pytest.raises(ImproperlyConfigured):
             Secret.objects.create(text="x")
 
@@ -211,7 +211,7 @@ def test_serialization_roundtrip():
 
 def test_deconstruct():
     _, path, _, kwargs = Secret._meta.get_field("short").deconstruct()
-    assert path == "django_fernet.fields.FernetTextField"
+    assert path == "django_fernetix.fields.FernetTextField"
     assert kwargs == {"max_length": 20, "null": True}
 
 

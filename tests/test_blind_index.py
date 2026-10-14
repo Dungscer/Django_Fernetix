@@ -4,7 +4,7 @@ from django.db import connection, models
 from django.test import override_settings
 from django.test.utils import isolate_apps
 
-from django_fernet import FernetJSONField, FernetTextField
+from django_fernetix import FernetJSONField, FernetTextField
 from tests.testapp.models import Child, Contact, Owner
 
 pytestmark = pytest.mark.django_db
@@ -100,9 +100,9 @@ def test_digest_depends_on_the_field():
 
 
 def test_missing_index_key():
-    with override_settings(DJANGO_FERNET_INDEX_KEY=None):
+    with override_settings(DJANGO_FERNETIX_INDEX_KEY=None):
         errors = Contact._meta.get_field("email").check()
-        assert "django_fernet.E002" in [e.id for e in errors]
+        assert "django_fernetix.E002" in [e.id for e in errors]
         with pytest.raises(ImproperlyConfigured):
             Contact.objects.create(email="a@example.com")
 
@@ -116,7 +116,7 @@ def test_json_does_not_support_blind_index():
             app_label = "testapp"
 
     errors = Broken._meta.get_field("data").check()
-    assert "django_fernet.E003" in [e.id for e in errors]
+    assert "django_fernetix.E003" in [e.id for e in errors]
 
 
 def test_deconstruct_keeps_options():

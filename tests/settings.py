@@ -1,12 +1,12 @@
 import os
 
-from django_fernet import generate_key
+from django_fernetix import generate_key
 
 SECRET_KEY = "tests"
 USE_TZ = True
-INSTALLED_APPS = ["django_fernet", "tests.testapp"]
+INSTALLED_APPS = ["django_fernetix", "tests.testapp"]
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-DJANGO_FERNET_KEYS = [generate_key()]
+DJANGO_FERNETIX_KEYS = [generate_key()]
 
 if os.environ.get("TEST_DB") == "postgres":
     DATABASES = {
@@ -21,4 +21,4 @@ if os.environ.get("TEST_DB") == "postgres":
     }
 else:
     DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
-DJANGO_FERNET_INDEX_KEY = "test-index-key"
+DJANGO_FERNETIX_INDEX_KEY = "test-index-key"

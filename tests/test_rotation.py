@@ -5,9 +5,9 @@ from django.core.management.base import CommandError
 from django.db import connection
 from django.test import override_settings
 
-from django_fernet import generate_key
-from django_fernet.operations import copy_field
-from django_fernet.rotation import rotate
+from django_fernetix import generate_key
+from django_fernetix.operations import copy_field
+from django_fernetix.rotation import rotate
 from tests.testapp.models import Contact, Legacy, Secret
 
 pytestmark = pytest.mark.django_db
@@ -21,12 +21,12 @@ def raw_column(table, column):
 
 def test_rotate_moves_rows_to_the_new_key():
     old, new = generate_key(), generate_key()
-    with override_settings(DJANGO_FERNET_KEYS=[old]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[old]):
         Secret.objects.bulk_create([Secret(text=f"t{i}", number=i) for i in range(7)])
         Secret.objects.create()
-    with override_settings(DJANGO_FERNET_KEYS=[new, old]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[new, old]):
         assert rotate(Secret, batch_size=3) == 8
-    with override_settings(DJANGO_FERNET_KEYS=[new]):
+    with override_settings(DJANGO_FERNETIX_KEYS=[new]):
         assert [s.text for s in Secret.objects.order_by("pk")][:7] == [f"t{i}" for i in range(7)]
 
 
@@ -39,7 +39,7 @@ def test_rotate_changes_the_ciphertext():
 
 def test_rotate_rebuilds_blind_index_for_a_new_index_key():
     Contact.objects.create(email="a@example.com")
-    with override_settings(DJANGO_FERNET_INDEX_KEY="another-key"):
+    with override_settings(DJANGO_FERNETIX_INDEX_KEY="another-key"):
         assert not Contact.objects.filter(email="a@example.com").exists()
         rotate(Contact)
         assert Contact.objects.filter(email="a@example.com").exists()

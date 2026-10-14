@@ -1,5 +1,5 @@
 class FernetError(Exception):
-    """Base class for all django_fernet errors."""
+    """Base class for all django_fernetix errors."""
 
 
 class DecryptionError(FernetError):

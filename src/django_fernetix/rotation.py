@@ -26,7 +26,7 @@ def rotate(model, batch_size=500):
     """Re-encrypt every Fernet field of ``model`` with the first configured key.
 
     Blind indexes are rebuilt as well, so this also applies a new
-    ``DJANGO_FERNET_INDEX_KEY``. Returns the number of rows rewritten.
+    ``DJANGO_FERNETIX_INDEX_KEY``. Returns the number of rows rewritten.
     Rows are saved with ``save(update_fields=...)``, so ``post_save`` fires.
     """
     fields = fernet_fields(model)

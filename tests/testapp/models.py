@@ -1,6 +1,6 @@
 from django.db import models
 
-from django_fernet import (
+from django_fernetix import (
     FernetDateField,
     FernetDateTimeField,
     FernetEmailField,

@@ -1,12 +1,12 @@
 from django.apps import apps
 from django.core.management.base import BaseCommand, CommandError
 
-from django_fernet.rotation import fernet_fields, rotate
+from django_fernetix.rotation import fernet_fields, rotate
 
 
 class Command(BaseCommand):
     help = (
-        "Re-encrypt Fernet fields with the first key in DJANGO_FERNET_KEYS and "
+        "Re-encrypt Fernet fields with the first key in DJANGO_FERNETIX_KEYS and "
         "rebuild blind indexes. Run it after putting a new key first."
     )
 

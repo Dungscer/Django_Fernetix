@@ -1,4 +1,4 @@
-# django-fernet
+# django-fernetix
 
 Django model fields that keep their values encrypted in the database using
 [Fernet](https://cryptography.io/en/latest/fernet/) (AES-128-CBC + HMAC).
@@ -8,11 +8,18 @@ that package.
 
 ## Setup
 
+```
+pip install django-fernetix
+```
+
+Add `"django_fernetix"` to `INSTALLED_APPS` (needed for the `fernet_rotate`
+command), then configure the keys:
+
 ```python
 # settings.py
-from django_fernet import generate_key  # run once, keep the output secret
+from django_fernetix import generate_key  # run once, keep the output secret
 
-DJANGO_FERNET_KEYS = ["<key from generate_key()>"]
+DJANGO_FERNETIX_KEYS = ["<key from generate_key()>"]
 ```
 
 Keys must be real Fernet keys; nothing is derived from `SECRET_KEY`.
@@ -22,7 +29,7 @@ Losing every key means losing the data.
 
 ```python
 from django.db import models
-from django_fernet import FernetTextField, FernetJSONField
+from django_fernetix import FernetTextField, FernetJSONField
 
 class Account(models.Model):
     iban = FernetTextField(max_length=34)
@@ -43,7 +50,7 @@ Validators (`max_length`, email format, ...) run on the plain value.
 
 ## Key rotation
 
-`DJANGO_FERNET_KEYS` is a list. The first key encrypts, every key decrypts.
+`DJANGO_FERNETIX_KEYS` is a list. The first key encrypts, every key decrypts.
 To rotate: put the new key first, run
 
 ```
@@ -62,7 +69,7 @@ blind index: an HMAC of the plain value in a hidden companion column.
 
 ```python
 # settings.py
-DJANGO_FERNET_INDEX_KEY = "<another long random secret>"
+DJANGO_FERNETIX_INDEX_KEY = "<another long random secret>"
 
 class Customer(models.Model):
     email = FernetEmailField(blind_index=True, ignore_case=True)
@@ -96,7 +103,7 @@ Customer.objects.filter(email__in=[...])
 * Tokens are random, so equal values look different. Therefore encrypted
   columns **cannot be queried or indexed**: every lookup except `isnull`
   raises `FieldError` (unless a blind index is enabled, see above), and `primary_key`, `unique` or `db_index` fail
-  Django's system check (`django_fernet.E001`). Lookups
+  Django's system check (`django_fernetix.E001`). Lookups
   by encrypted email, as django-allauth does, need `blind_index=True`.
 * A value that cannot be decrypted raises `DecryptionError` naming the model
   field.
@@ -109,7 +116,7 @@ The encrypted column is separate, so convert in three migrations:
 2. copy the data:
 
    ```python
-   from django_fernet.operations import copy_field
+   from django_fernetix.operations import copy_field
 
    operations = [copy_field("shop", "Account", "secret", "secret_enc")]
    ```
