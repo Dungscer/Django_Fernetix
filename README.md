@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
 [![Python versions](https://img.shields.io/pypi/pyversions/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
 [![Django versions](https://img.shields.io/pypi/frameworkversions/django/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
-[![License](https://img.shields.io/pypi/l/django-fernetix.svg)](LICENSE)
+[![License](https://img.shields.io/pypi/l/django-fernetix.svg)](https://github.com/Dungscer/Django_Fernetix/blob/master/LICENSE)
 [![Build](https://github.com/Dungscer/Django_Fernetix/actions/workflows/build.yaml/badge.svg)](https://github.com/Dungscer/Django_Fernetix/actions/workflows/build.yaml)
 
 Django model fields that keep their values encrypted in the database using
@@ -171,4 +171,4 @@ TEST_DB=postgres pytest   # needs PostgreSQL, configured via PG* variables
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](https://github.com/Dungscer/Django_Fernetix/blob/master/LICENSE).
