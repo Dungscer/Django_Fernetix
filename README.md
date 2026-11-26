@@ -1,16 +1,42 @@
 # django-fernetix
 
+[![PyPI](https://img.shields.io/pypi/v/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
+[![Python versions](https://img.shields.io/pypi/pyversions/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
+[![Django versions](https://img.shields.io/pypi/frameworkversions/django/django-fernetix.svg)](https://pypi.org/project/django-fernetix/)
+[![License](https://img.shields.io/pypi/l/django-fernetix.svg)](LICENSE)
+[![Build](https://github.com/Dungscer/Django_Fernetix/actions/workflows/build.yaml/badge.svg)](https://github.com/Dungscer/Django_Fernetix/actions/workflows/build.yaml)
+
 Django model fields that keep their values encrypted in the database using
 [Fernet](https://cryptography.io/en/latest/fernet/) (AES-128-CBC + HMAC).
-Meant as a maintained alternative to the abandoned `django-fernet-fields`,
-but with its own API and storage format. It does not read data written by
-that package.
+
+Two things most encrypted-field packages leave out:
+
+- **Encrypted fields you can still search.** A blind index (an HMAC in a hidden
+  companion column) makes `exact` and `in` lookups work on an encrypted column,
+  case-insensitively if you want — enough for login-by-email, where the email
+  column itself stays encrypted.
+- **Key rotation you can actually run.** Keys are a list: the first one
+  encrypts, every one decrypts. `python manage.py fernet_rotate` re-encrypts
+  existing rows in batches — whole project, one app or one model — so an old
+  key can be retired without downtime.
+
+Tested on Django 4.2, 5.2, 6.0 and 6.1, Python 3.10+, against SQLite and
+PostgreSQL.
 
 ## Setup
 
 ```
 pip install django-fernetix
 ```
+
+### Coming from django-fernet-fields?
+
+`django-fernet-fields` has had no release since 2019 and does not run on
+current Django. This package covers the same ground and is maintained, but it
+has its own API and its own storage format: **it cannot read data written by
+`django-fernet-fields`.** Moving across means re-encrypting, the same way as
+the plain-column migration described in
+[Existing plain columns](#existing-plain-columns).
 
 Add `"django_fernetix"` to `INSTALLED_APPS` (needed for the `fernet_rotate`
 command), then configure the keys:
